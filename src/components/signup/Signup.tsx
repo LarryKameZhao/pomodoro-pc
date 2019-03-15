@@ -4,7 +4,6 @@ import {Link} from 'react-router-dom';
 import axios from 'src/config/axios'
 import './signup.scss'
 
-
 interface ISignUpState {
 	account: string,
 	password: string,
