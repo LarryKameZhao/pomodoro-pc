@@ -43,7 +43,7 @@ class Index extends React.Component<IRouter, IIndexState> {
 		return (
 			<div className="index">
         <p>欢迎, {this.state.user && this.state.user.account}</p>
-        <Button type="primary" onClick={this.logout}>登出</Button>
+        <Button  onClick={this.logout}>登出</Button>
       </div>
 		)
 	}
