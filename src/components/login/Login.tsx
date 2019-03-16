@@ -22,9 +22,12 @@ class Login extends React.Component<any, IloginState> {
       await http.post('sign_in/user', {
         account,
         password
-      }).then(()=>{
+      }).then((res)=>{
         console.log('登录成功')
-        this.props.history.push('/')
+        console.log(res.statusText)
+        if (res.statusText === 'OK') {
+          this.props.history.push('/')
+        }
       })
     } catch(e) {
       throw new Error(e)

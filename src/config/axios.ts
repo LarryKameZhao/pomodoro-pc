@@ -1,5 +1,5 @@
 import axios from 'axios';
-// import history from './history'
+import history from './history'
 
 const appID = "q5HRLsW98Fem9zhjBkQnurVR"
 const appSecret = "Yg2AF3XwqcnoQ1LPnV8gD27n"
@@ -35,9 +35,8 @@ instance.interceptors.response.use((response) => {
 },  (error) => {
 	if(error.response.status === 401){
 		console.log("重定向");
-		// history.push('/login')
-	}
-	// Do something with response error
+		history.push('/login')
+	}	// Do something with response error
 	return Promise.reject(error);
 });
 
