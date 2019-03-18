@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Dropdown,Icon,Menu } from "antd";
+import { Dropdown, Icon, Menu } from "antd";
 import axios from 'src/config/axios';
 import history from 'src/config/history'
 import './home.scss'
+import Todos from 'src/components/todos/Todos'
 interface IRouter {
 	history: any;
 }
@@ -11,8 +12,8 @@ interface IIndexState {
 	user: any
 }
 
-const logout = ()=>{
-	localStorage.setItem('x-token','')
+const logout = () => {
+	localStorage.setItem('x-token', '')
 	history.push('/login')
 }
 
@@ -23,24 +24,24 @@ const menu = (
 	</Menu>
 );
 
-class Home extends React.Component<IRouter,IIndexState> {
+class Home extends React.Component<IRouter, IIndexState> {
 
-	constructor(props: any){
+	constructor(props: any) {
 		super(props)
 		this.state = {
 			user: {}
 		}
 	}
 
-	async componentWillMount(){
+	async componentWillMount() {
 		await this.getMe()
 	}
 
 	getMe = async () => {
 		const response = await axios.get('me');
-		this.setState({user: response.data})
+		this.setState({ user: response.data })
 	}
-	
+
 	render() {
 		return (
 			<div className="home" id="Home">
@@ -49,10 +50,13 @@ class Home extends React.Component<IRouter,IIndexState> {
 					<Dropdown overlay={menu}>
 						<span>
 							{this.state.user && this.state.user.account}
-							<Icon type="down" style={{ marginLeft: 8}}/>
+							<Icon type="down" style={{ marginLeft: 8 }} />
 						</span>
 					</Dropdown>
 				</header>
+				<main>
+					<Todos/>
+				</main>
 			</div>
 		);
 	}
