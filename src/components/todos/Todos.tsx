@@ -63,6 +63,16 @@ class Todos extends React.Component<any,ITodoItemState> {
       todos: newTodos
     })
   }
+  get unCompletedTodos () {
+    return this.unDeletedTodos.filter(t=>!t.completed)
+  }
+  get completedTodos () {
+    return this.unDeletedTodos.filter(t=>t.completed)
+  }
+  get unDeletedTodos () {
+    return this.state.todos.filter(t=>!t.deleted)
+  }
+  
   componentDidMount() {
     this.getTodos()
   }
@@ -70,16 +80,25 @@ class Todos extends React.Component<any,ITodoItemState> {
     return (
       <div className="todos">
         <TodoInput addTodo={params => this.addTo(params)} />
-        <main>
+        <div className="todo-main">
           {
-            this.state.todos.map((item,index)=>{
+            this.unCompletedTodos.map((item,index)=>{
               return <TodoItem key={item.id} {...item}
                 update = {this.updateTodo}
                 toEditing = {this.toEditing}
               />
             })
           }
-        </main>
+          {
+            this.completedTodos.map((item,index)=>{
+              return <TodoItem key={item.id} {...item}
+                update = {this.updateTodo}
+                toEditing = {this.toEditing}
+              />
+            })
+          }
+          
+        </div>
       </div>
     )
   }
