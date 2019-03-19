@@ -4,7 +4,7 @@ import TodoItem from './TodoItem'
 import http from 'src/config/axios'
 import './todos.scss'
 interface ITodoItemState{
-  todos: any[];
+  todos: any[]
 }
 class Todos extends React.Component<any,ITodoItemState> {
   constructor(props) {
@@ -22,12 +22,13 @@ class Todos extends React.Component<any,ITodoItemState> {
     }
   }
   getTodos = async () => {
-    console.log('getTodos')
     try {
       const response = await http.get('todos')
-      console.log(response.data)
+      const todos = response.data.resources.map(t=>Object.assign({}, t,{editing: false}))
+      console.log(todos)
+      console.log('........')
       this.setState({
-        todos: response.data.resources
+        todos
       })
     }catch(e){
       throw new Error(e)
@@ -49,6 +50,19 @@ class Todos extends React.Component<any,ITodoItemState> {
       throw new Error(e)
     }
   }
+  toEditing = (id:number) => {
+    const {todos} = this.state
+    const newTodos = todos.map(t=>{
+      if(id === t.id) {
+        return Object.assign({},t,{editing:true})
+      } else {
+        return Object.assign({},t,{editing:false})
+      }
+    })
+    this.setState({
+      todos: newTodos
+    })
+  }
   componentDidMount() {
     this.getTodos()
   }
@@ -61,6 +75,7 @@ class Todos extends React.Component<any,ITodoItemState> {
             this.state.todos.map((item,index)=>{
               return <TodoItem key={item.id} {...item}
                 update = {this.updateTodo}
+                toEditing = {this.toEditing}
               />
             })
           }
