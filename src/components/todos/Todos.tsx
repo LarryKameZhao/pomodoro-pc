@@ -2,6 +2,8 @@ import * as React from 'react'
 import TodoInput from './TodoInput'
 import TodoItem from './TodoItem'
 import http from 'src/config/axios'
+import {connect} from 'react-redux'
+import {addTodo} from '../../redux/action'
 import './todos.scss'
 interface ITodoItemState{
   todos: any[]
@@ -79,7 +81,7 @@ class Todos extends React.Component<any,ITodoItemState> {
   public render() {
     return (
       <div className="todos">
-        <TodoInput addTodo={params => this.addTo(params)} />
+        <TodoInput  />
         <div className="todo-main">
           {
             this.unCompletedTodos.map((item,index)=>{
@@ -103,4 +105,11 @@ class Todos extends React.Component<any,ITodoItemState> {
     )
   }
 }
-export default Todos
+const mapStateToProps = (state, ownProps)=>({
+  todos: state.todos,
+  ...ownProps
+})
+const mapStateActions = ()=>({
+  addTodo
+})
+export default connect(mapStateToProps, mapStateActions)(Todos)
