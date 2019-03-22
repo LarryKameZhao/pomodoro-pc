@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Input, Icon } from 'antd'
-import {connect} from 'react-redux'
-import {addTodo} from '../../redux/action'
+import { connect } from 'react-redux'
+import { addTodo } from '../../redux/action'
 import http from 'src/config/axios'
 interface ITodoInputState {
   description: string
@@ -19,22 +19,21 @@ class TodoInput extends React.Component<any, ITodoInputState, ITodoInputProps> {
   onChangeUserName = e => {
     this.setState({ description: e.target.value })
   }
-  onKeyUp = e => {
-    if (e.keyCode === 13 && this.state.description !== '') {
-      console.log('commit')
-      this.postTodo()
-      this.setState({ description: '' })
-    }
-  }
-  postTodo = async () => {
-    try{
-      const response = await http.post('todos', {description:this.state.description})
-      this.props.addTodo(response.data.resource)
-    }catch(e){
-      throw new Error(e)
-    }
-    this.setState({ description: '' })
-  }
+  onKeyUp = (e) => {
+		if(e.keyCode === 13 && this.state.description !== ''){
+			this.postTodo()
+		}
+	}
+
+	postTodo = async ()=>{
+		try {
+			const response = await http.post('todos',{description: this.state.description})
+			this.props.addTodo(response.data.resource)
+		}catch (e) {
+			throw new Error(e)
+		}
+		this.setState({description: ''})
+	}
   render() {
     const { description } = this.state
     const suffix = description ? (
@@ -58,7 +57,12 @@ class TodoInput extends React.Component<any, ITodoInputState, ITodoInputProps> {
 const mapStateToProps = (state, ownProps) => ({
   ...ownProps
 })
-const mapActions = () =>({
+
+const mapDispatchToProps = {
   addTodo
-})
-export default connect(mapStateToProps, mapActions)(TodoInput)
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodoInput)
