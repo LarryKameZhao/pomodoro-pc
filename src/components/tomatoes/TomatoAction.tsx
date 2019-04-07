@@ -1,88 +1,109 @@
-import * as React from 'react'
-import './tomatoes.scss'
-import { connect } from 'react-redux'
-import { Button, Input } from 'antd'
-import http from 'src/config/axios'
+import * as React from 'react';
+import {Button,Modal,Input,Icon} from "antd"
+import axios from 'src/config/axios'
 import CountDown from './CountDown'
+import './tomatoAction.scss'
+// import CountDown from './CountDownHook'
+
 interface ITomatoActionProps {
-  startTomato: () => void
-  unfinishedTomato: any,
-  updateTomato: (payload: any[])=>void
+  startTomato: () => void;
+  updateTomato: (payload: any) => void;
+  unfinishedTomato: any;
 }
+
 interface ITomatoActionState {
-  description: string
+  description: string;
 }
-class TomatoAction extends React.Component<
-  ITomatoActionProps,
-  ITomatoActionState
-> {
-  constructor(props) {
+
+const confirm = Modal.confirm;
+
+class TomatoAction extends React.Component<ITomatoActionProps,ITomatoActionState> {
+  constructor(props){
     super(props)
     this.state = {
       description: ''
     }
   }
-  onKeyUp = e => {
-    if (e.keyCode === 13 && this.state.description !== '') {
-      this.addDescription()
+
+  onKeyUp = (e) => {
+    if(e.keyCode === 13 && this.state.description !== ''){
+      this.updateTomato({
+        description: this.state.description,
+        ended_at: new Date()
+      })
+      this.setState({description: ''})
     }
   }
-  addDescription = async () => {
+
+  onFinish = () => {
+    this.forceUpdate()
+  }
+
+  showConfirm = () =>{
+    confirm({
+      title: '您目前正在一个番茄工作时间中，要放弃这个番茄吗？',
+      onOk: ()=>{
+        this.abortTomato()
+      },
+      onCancel() {
+        console.log('取消');
+      },
+      cancelText: '取消',
+      okText: '确定',
+    });
+  }
+
+  abortTomato = ()=>{
+    this.updateTomato({aborted: true})
+    document.title = '饥人谷番茄APP';
+  }
+
+  updateTomato = async (params:any)=>{
     try {
-      const response = await http.put(
-        `tomatoes/${this.props.unfinishedTomato.id}`,
-        { description: this.state.description, ended_at: new Date() }
-      )
-      console.log(response)
+      const response = await axios.put(`tomatoes/${this.props.unfinishedTomato.id}`,params)
       this.props.updateTomato(response.data.resource)
-      this.setState({ description: '' })
-    } catch (e) {
+    }catch (e) {
       throw new Error(e)
     }
   }
+
   public render() {
-    let html = <div />
-    if (this.props.unfinishedTomato === undefined) {
-      html = (
-        <Button
-          onClick={() => {
-            this.props.startTomato()
-          }}
-          className="start-button"
-        >
-          start tomato
-        </Button>
-      )
-    } else {
-      const started = Date.parse(this.props.unfinishedTomato.started_at)
+    let html = <div/>
+    if(this.props.unfinishedTomato === undefined){
+      html = <Button className="startTomatoButton" onClick={()=>{this.props.startTomato()}}>开始番茄</Button>
+    }else{
+      const startedAt = Date.parse(this.props.unfinishedTomato.started_at)
       const duration = this.props.unfinishedTomato.duration
       const timeNow = new Date().getTime()
-      console.log(started)
-      if (timeNow - started > duration) {
+      if(timeNow - startedAt > duration){
+        html = <div className="inputWrapper">
+          <Input value={this.state.description}
+                 placeholder="请输入你刚刚完成的任务"
+                 onChange={e=> this.setState({description: e.target.value})}
+                 onKeyUp={e => this.onKeyUp(e)}
+          />
+          <Icon type="close-circle" className="abort"
+                onClick={this.showConfirm}
+          />
+        </div>
+      }else if(timeNow - startedAt < duration){
+        const timer = duration - timeNow + startedAt
         html = (
-          <div>
-            <Input
-              value={this.state.description}
-              onChange={e => {
-                this.setState({ description: e.target.value })
-              }}
-              onKeyUp={e => this.onKeyUp(e)}
-              placeholder="请输入你刚刚完成的任务"
-            />
-          </div>
-        )
-      } else if (timeNow - started < duration) {
-        const timer = duration - timeNow + started
-        html = (
-          <div>
-            {' '}
-            <CountDown timer={timer} duration={duration}/>
+          <div className="countDownWrapper">
+            <CountDown timer={timer} duration={duration}
+                       onFinish={this.onFinish}/>
+            <Icon type="close-circle" className="abort"
+                  onClick={this.showConfirm}/>
           </div>
         )
       }
     }
-
-    return <div className="tomato-action">{html}</div>
+    return (
+      <div className="TomatoAction" id="TomatoAction">
+        {html}
+      </div>
+    );
   }
 }
-export default connect()(TomatoAction)
+
+export default TomatoAction;
