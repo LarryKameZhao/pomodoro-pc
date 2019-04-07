@@ -49,11 +49,9 @@ class Todos extends React.Component<any> {
         <TodoInput />
         <div className="todo-main">
           {this.unCompletedTodos.map(t => {
-            console.log(t.id)
             return <TodoItem key={t.id} {...t} />
           })}
           {this.completedTodos.map(t => {
-            console.log(t.id)
             return <TodoItem key={t.id} {...t} />
           })}
         </div>

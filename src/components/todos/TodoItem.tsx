@@ -25,7 +25,6 @@ class TodoItem extends React.Component<ITodoItemProps,ITodoItemState> {
 		this.state = {
 			editText: this.props.description
     }
-    console.log(this.props.editing)
 	}
 
 	updateTodo = async (params:any) => {

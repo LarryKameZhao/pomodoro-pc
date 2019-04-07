@@ -1,4 +1,4 @@
 import { combineReducers } from 'redux'
 import todos from './todoReducers'
-
-export default combineReducers({ todos })
+import tomatoes from './tomatoReducers'
+export default combineReducers({ todos, tomatoes})
