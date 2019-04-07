@@ -31,7 +31,7 @@ class CountDown extends React.Component<ICountDownProps, ICountDownState> {
     timerId = setInterval(() => {
       document.title = `${this.countDown} - pomodora APP`
       const time = this.state.countDown
-      this.setState({ countDown: time - 10000 })
+      this.setState({ countDown: time - 1000 })
       if (time < 1000) {
         document.title = ' pomodora APP'
         clearInterval(timerId)
