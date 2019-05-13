@@ -1,8 +1,8 @@
 import axios from 'axios';
 import history from './history'
 
-const appID = "q5HRLsW98Fem9zhjBkQnurVR"
-const appSecret = "Yg2AF3XwqcnoQ1LPnV8gD27n"
+const appID = "qjn4KKeMSTRbyAY7GAfypmz1"
+const appSecret = "RdpweEESBKgrkZbfPdvtkMuC"
 
 /* tslint:disable:no-string-literal */
 const instance = axios.create({
