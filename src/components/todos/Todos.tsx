@@ -3,7 +3,7 @@ import TodoInput from './TodoInput'
 import TodoItem from './TodoItem'
 import http from 'src/config/axios'
 import { connect } from 'react-redux'
-import { addTodo, initTodos, updateTodo, editingTodo } from '../../redux/action'
+import { updateTodo } from '../../redux/action'
 import './todos.scss'
 
 class Todos extends React.Component<any> {
@@ -14,17 +14,6 @@ class Todos extends React.Component<any> {
     try {
       const response = await http.post('todos', params)
       console.log(response)
-    } catch (e) {
-      throw new Error(e)
-    }
-  }
-  getTodos = async () => {
-    try {
-      const response = await http.get('todos')
-      const todos = response.data.resources.map(t =>
-        Object.assign({}, t, { editing: false })
-      )
-      this.props.initTodos(todos)
     } catch (e) {
       throw new Error(e)
     }
@@ -40,9 +29,7 @@ class Todos extends React.Component<any> {
     return this.props.todos.filter(t => !t.deleted)
   }
 
-  componentDidMount() {
-    this.getTodos()
-  }
+
   public render() {
     return (
       <div className="todos">
@@ -51,9 +38,7 @@ class Todos extends React.Component<any> {
           {this.unCompletedTodos.map(t => {
             return <TodoItem key={t.id} {...t} />
           })}
-          {this.completedTodos.map(t => {
-            return <TodoItem key={t.id} {...t} />
-          })}
+
         </div>
       </div>
     )
@@ -64,10 +49,8 @@ const mapStateToProps = (state, ownProps) => ({
   ...ownProps
 })
 const mapStateActions = {
-  initTodos,
-  addTodo,
   updateTodo,
-  editingTodo
+
 }
 export default connect(
   mapStateToProps,
